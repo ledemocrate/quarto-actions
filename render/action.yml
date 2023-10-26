@@ -21,19 +21,17 @@ runs:
       run: |
         echo $(which chromium-browser)
         $(which chromium-browser) --headless https://www.chromestatus.com
-      shell: bash
     - name: 'Render'
       env:
         QUARTO_PRINT_STACK: true
-      run: |
+      run: | 
         if [ "${{ inputs.to }}" == "" ]; then
-          quarto render ${{ inputs.path }}
+          nix-shell --run 'quarto render ${{ inputs.path }}'
         else
-          quarto render ${{ inputs.path }} --to ${{ inputs.to }}
+          nix-shell --run 'quarto render ${{ inputs.path }} --to ${{ inputs.to }}'
         fi
         if [ -f "_book" ]; then
           echo "QUARTO_OUTPUT=_book" >> $GITHUB_ENV
         elif [ -f "_site" ]; then
           echo "QUARTO_OUTPUT=_site" >> $GITHUB_ENV
         fi
-      shell: bash
